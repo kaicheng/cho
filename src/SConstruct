@@ -1,4 +1,5 @@
-env1   =  Environment(CC = 'gcc-4.8', CXX = 'g++-4.8') 
+import os
+env1   =  Environment(CC = 'gcc', CXX = 'g++', ENV = { 'PATH' : os.environ['PATH'] }) 
 env2   =   env1.Clone()
 env1.SConscript(dirs=['adpcm','motion','aes','blowfish', 'dfadd' ,  'dfsin',
 'dfmul', 'gsm',  'sha', 'dfdiv', 'jpeg', 'mips'], exports='env1')
