@@ -1,6 +1,7 @@
 import os
 env1   =  Environment(CC = 'gcc', CXX = 'g++', ENV = { 'PATH' : os.environ['PATH'] }) 
 env2   =   env1.Clone()
+env3   = env1.Clone()
 env1.SConscript(dirs=['adpcm','motion','aes','blowfish', 'dfadd' ,  'dfsin',
 'dfmul', 'gsm',  'sha', 'dfdiv', 'jpeg', 'mips'], exports='env1')
 
@@ -11,6 +12,16 @@ env2.SConscript(dirs=[
 'dfsin_opencl', 'dfmul_opencl',  'gsm_opencl', 'mips_opencl',
 'sha_opencl','dfdiv_opencl','jpeg_opencl'], exports='env2')
 
-
-
-
+env3['ENV']['ALTERAOCLSDKROOT'] = os.environ['ALTERAOCLSDKROOT']
+env3['ENV']['ACL_BOARD_VENDOR_PATH'] = os.environ['ACL_BOARD_VENDOR_PATH']
+env3['ENV']['AOCL_BOARD_PACKAGE_ROOT'] = os.environ['AOCL_BOARD_PACKAGE_ROOT']
+env3['ENV']['LM_LICENSE_FILE'] = os.environ['LM_LICENSE_FILE']
+env3.ParseConfig("aocl link-config")
+env3.ParseConfig("aocl compile-config")
+env3.Append(CCFLAGS=' -O2 -g3 -std=c++0x')
+env3.Append(CPPPATH=['#util'])
+# env3.Append(LIBS=['OpenCL', 'alteracl', 'elf'])
+fobjs = [env3.Object('util/Util_fpga.o', 'util/Util.cpp'),
+	 env3.Object('util/AOCL_Utils.o', 'util/AOCL_Utils.cpp')]
+Export('fobjs')
+env3.SConscript(dirs=['adpcm_opencl_fpga', 'aes_opencl_fpga', 'blowfish_opencl_fpga', 'dfadd_opencl_fpga', 'dfsin_opencl_fpga', 'dfmul_opencl_fpga', 'gsm_opencl_fpga', 'mips_opencl_fpga', 'sha_opencl_fpga', 'dfdiv_opencl_fpga', 'jpeg_opencl_fpga'], exports=['env3'])
