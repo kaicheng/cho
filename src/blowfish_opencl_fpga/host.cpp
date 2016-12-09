@@ -12,7 +12,8 @@
 #include "AOCL_Utils.h"
 //using namespace std;
 
-
+using std::string;
+using std::stoull;
 
 int main(int argc, char* argv[])
 {
@@ -114,14 +115,17 @@ int main(int argc, char* argv[])
 
     /*Step 7: Initial input,output for the host and create memory objects for the kernel*/
 
-    
-    auto  num  = 5200;
-    std::vector<cl_uchar, AAlloc::AlignedAllocator<cl_uchar, 64> > Keys_in;
+    srand(7777);
+    uint64_t num  = stoul(string(argv[1]));
+    // uint64_t num = 5200;
+    std::cout << "num = " << num << std::endl;
+    std::vector<cl_uchar, AAlloc::AlignedAllocator<cl_uchar, 64> > Keys_in(num);
     std::vector<cl_uchar, AAlloc::AlignedAllocator<cl_uchar, 64> > Keys_out(num);
-    //Keys_in.resize(num_in);
-    Keys_in.assign(in_key, in_key+num);
-
-
+    // Keys_in.resize(num);
+    for (uint64_t i = 0; i < num; ++i) {
+        Keys_in[i] = rand() % 256;
+    }
+    // Keys_in.assign(in_key, in_key+num);
 
     cl_uchar* input =  Keys_in.data();
     cl_uchar* output = Keys_out.data();
@@ -203,6 +207,13 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    status = clSetKernelArg(kernel, 2, sizeof(cl_ulong), (void *)&num);
+    if (status != CL_SUCCESS)
+    {
+        std::cout<<"Error: setting up kernel argument no 2!"<<std::endl;
+        return 1;
+    }
+
     std::cout<<"Lunching blowfish kernel!"<<std::endl;
 
     /*Step 10: Running the kernel.*/
@@ -218,6 +229,8 @@ int main(int argc, char* argv[])
         std::cout << get_error_string(status)  <<std::endl;
         return 1;
     }
+
+std::cout << "Kernel lunched\n";
 
     /*Step 11: Read the std::cout put back to host memory.*/
 
@@ -251,6 +264,7 @@ int main(int argc, char* argv[])
 
     std::cout<<"verifying blowfish kernel results!"<<std::endl;
 
+/*
     for (int i  = 0; i < 8; i++)
     {
         if (Keys_out[i] != out_key[i])
@@ -261,6 +275,7 @@ int main(int argc, char* argv[])
         }
 
     }
+*/
 
 
     cl_ulong start = 0, end = 0;

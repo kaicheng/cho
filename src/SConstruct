@@ -24,4 +24,4 @@ env3.Append(CPPPATH=['#util'])
 fobjs = [env3.Object('util/Util_fpga.o', 'util/Util.cpp'),
 	 env3.Object('util/AOCL_Utils.o', 'util/AOCL_Utils.cpp')]
 Export('fobjs')
-env3.SConscript(dirs=['adpcm_opencl_fpga', 'aes_opencl_fpga', 'blowfish_opencl_fpga', 'dfadd_opencl_fpga', 'dfsin_opencl_fpga', 'dfmul_opencl_fpga', 'gsm_opencl_fpga', 'mips_opencl_fpga', 'sha_opencl_fpga', 'dfdiv_opencl_fpga', 'jpeg_opencl_fpga'], exports=['env3'])
+env3.SConscript(dirs=['aes_opencl_fpga', 'blowfish_opencl_fpga', 'dfadd_opencl_fpga', 'dfsin_opencl_fpga', 'dfmul_opencl_fpga', 'gsm_opencl_fpga', 'mips_opencl_fpga', 'sha_opencl_fpga', 'dfdiv_opencl_fpga', 'jpeg_opencl_fpga', 'motion_opencl_fpga'], exports=['env3'])

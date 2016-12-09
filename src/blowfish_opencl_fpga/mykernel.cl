@@ -16,7 +16,7 @@
 __kernel
 __attribute__((num_compute_units(1)))
 __attribute__((reqd_work_group_size(1,1,1)))
-void blowfish_main(__global const unsigned char* restrict  input_data,  __global unsigned char* restrict  output_data)
+void blowfish_main(__global const unsigned char* restrict  input_data,  __global unsigned char* restrict  output_data, ulong key_size)
 {
   unsigned char ukey[8] ={0};
   unsigned char indata[N];
@@ -35,14 +35,18 @@ void blowfish_main(__global const unsigned char* restrict  input_data,  __global
   encordec = 1;
   check = 0;
 
+  // printf("key_size = %lu\n", key_size);
+
   BF_set_key (8, ukey, key_P, key_S);
   i  = 0;
   #pragma unroll 2
-  while ( k < KEYSIZE )
+   while ( k < key_size )
+//  while ( k < KEYSIZE )
   {
 
     
-    while (k < KEYSIZE && i < N)
+    while (k < key_size && i < N)
+//    while (k < KEYSIZE && i < N)
    {
       //printf("input_data[%d] = %d\n", k , (int)input_data[k]);
       indata[i++] = input_data[k++];
